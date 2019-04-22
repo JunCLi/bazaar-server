@@ -7,11 +7,19 @@ const userSeeds = [
     fullname: 'Simon Stern',
     email: 'simon@simon.stern',
     password: '123',
+    status: 'active'
   },
   {
     fullname: 'Akshay Manchanda',
     email: 'akshay@akshay.com',
     password: '123',
+    status: 'active'
+  },
+  {
+    fullname: 'Alam Talash',
+    email: 'alam@alam.com',
+    password: '145',
+    status: 'active'
   }
 ]
 
@@ -28,7 +36,7 @@ const seed = async () => {
         pg.query(
           squel
             .insert()
-            .into('boiler.users')
+            .into('bazaar.users')
             .setFields(userSeed)
             .toParam()
         )

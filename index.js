@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8080
 app.set('PORT', process.env.PORT || 8080)
 app.set('PG_HOST', process.env.PG_HOST || 'localhost')
 app.set('PG_USER', process.env.PG_USER || 'postgres')
-app.set('PG_PASSWORD', process.env.PG_PASSWORD || '')
+app.set('PG_PASSWORD', process.env.PG_PASSWORD || 'root')
 app.set('PG_DB', process.env.PG_DB || 'postgres')
 app.set('JWT_SECRET', process.env.JWT_SECRET || 'DEV_SECRET')
 
@@ -52,7 +52,7 @@ const schema = makeExecutableSchema({
 const apolloServer = new ApolloServer({
   context: ({ req }) => {
     if (
-      req.headers.referer === 'http://localhost:8080/graphql' &&
+      req.headers.referer === 'http://localhost:8080/graphql' ||
       process.env.NODE_ENV !== 'production'
     ) {
       app.set('SKIP_AUTH', true)
