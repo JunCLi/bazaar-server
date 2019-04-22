@@ -62,11 +62,11 @@ module.exports = {
     },
 
     async registerItem(parent, input, {req, app, postgres}){
-      let {name, type, status, price, inventory} = input
+      let {item_name, item_type, item_price, item_inventory, item_owner_id} = input
 
       const newItemInsert = {
-        text: 'INSERT INTO bazaar.items (item_name, item_type, item_status, item_price, item_inventory) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        values: [name, type, status, price, inventory]
+        text: 'INSERT INTO bazaar.items (item_name, item_type, item_status, item_price, item_inventory, item_owner_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        values: [item_name, item_type, 'listed', item_price, item_inventory, item_owner_id]
       }
 
       await postgres.query(newItemInsert)
@@ -75,11 +75,55 @@ module.exports = {
       }
     },
 
+    async purchaseItem(parent, input, {req, app, postgres}){
+      try {
+        let {purchase_by_id, item_id, purchase_quantity} = input
+
+        const listedItemQuery = {
+          text: `SELECT item_owner_id, item_status, item_inventory, item_price FROM bazaar.items WHERE id = '${item_id}'`
+        }
+        
+        const listedItemQueryResult = await postgres.query(listedItemQuery)
+        const {item_owner_id, item_status, item_inventory, item_price} = listedItemQueryResult.rows[0]
+
+        if (item_status !== 'listed') throw 'This item is not for sale'
+        if (item_inventory < purchase_quantity) throw 'Not enough items in inventory'
+        if (purchase_by_id === item_owner_id) throw "You can't buy your own item!"
+        
+        const sensTransactionQuery = {
+          text: 'INSERT INTO bazaar.sens_transactions (stripe_id) VALUES (13) RETURNING *'
+        }
+
+        const senTransactionQueryResult = await postgres.query(sensTransactionQuery)
+        const sensTransactionID = senTransactionQueryResult.rows[0].id
+
+        const transactionQuery = {
+          text: 'INSERT INTO bazaar.transactions (item_id, sens_transaction_id, purchased_by_id, purchased_from_id, status, purchase_price, purchase_quantity) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+          values: [item_id, sensTransactionID, purchase_by_id, item_owner_id, 'completed', item_price, purchase_quantity] 
+        }
+        const adjustQuantityQuery = {
+          text: `UPDATE bazaar.items SET item_inventory = ${item_inventory - purchase_quantity} WHERE id = '${item_id}'`
+        }
+
+        await Promise.all([
+          postgres.query(transactionQuery),
+          postgres.query(adjustQuantityQuery)
+        ])
+        return {
+          message: 'success'
+        }
+
+      }catch(err){
+        console.log(err)
+        throw err
+      }
+    },
+
     async removeItem(parent, input, {req, app, postgres}){
-      let {id} = input
+      const {item_id} = input
 
       const removeItemQuery = {
-        text: `DELETE FROM bazaar.items WHERE id = '${id}'`
+        text: `UPDATE bazaar.items SET item_status = 'removed' WHERE id = '${item_id}'`
       }
       await postgres.query(removeItemQuery)
       return {
@@ -87,13 +131,9 @@ module.exports = {
       }
     },
 
-    async purchaseItem(parent, input, {req, app, postgres}){
-      let {id, status, inventory} = input
-
-      const purchaseItemQuery = {
-
-      }
-    }
+    async updateItem(parent, input, {req, app, postgres}){
+      
+    },
   },
 }
 

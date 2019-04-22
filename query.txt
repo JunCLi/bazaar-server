@@ -1,0 +1,116 @@
+query{
+  getAllItems{
+    id
+    item_owner_id
+    item_name
+    item_type
+    item_status
+    item_price
+    item_inventory
+    date_added
+  }
+}
+  
+query{
+  getItem(id: 2){
+    id
+    item_owner_id
+    item_name
+    item_type
+    item_status
+    item_price
+    item_inventory
+    date_added
+  }
+}
+
+query{
+  getUser(id: 1){
+    id
+    email
+    password
+    user_status
+    user_date_created
+    fullname
+    username
+  }
+}
+
+query{
+  getAllUsers{
+    id
+    email
+    user_status
+    user_date_created
+    fullname
+    username
+  }
+}
+
+query{
+  getAllTransactions(user_id: 1){
+    id
+    item_id
+    purchased_by_id
+    purchased_from_id
+    status
+    date_of_purchase
+    purchase_price
+    purchase_quantity
+  }
+}
+
+query{
+  getTransaction(id: 1){
+    id
+    item_id
+    purchased_by_id
+    purchased_from_id
+    status
+    date_of_purchase
+    purchase_price
+    purchase_quantity
+  }
+}
+
+
+
+
+mutation{
+  registerItem(
+    item_owner_id: 2
+    item_name: "Apple", 
+    item_type: "an item",
+    item_price: 234, 
+    item_inventory: 10, 
+  ){
+    message
+  }
+}
+
+mutation{
+  removeItem(id: 3){
+    message
+  }
+}
+
+mutation{
+  signUp(email: "hello", password: "1234"){
+    message
+  }
+}
+
+mutation{
+  login(
+    email: "hELo",
+    password: "1234",
+  ){
+    message
+  }
+}
+
+mutation{
+  purchaseItem(purchase_by_id: 3, item_id: 1, purchase_quantity: 1){
+    message
+  }
+}

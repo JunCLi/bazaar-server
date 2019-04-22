@@ -4,25 +4,43 @@ module.exports = gql`
 
   type Query {
     getAllUsers: [User],
-    user(id : ID!): User,
+    getUser(id : ID!): User,
     getAllItems: [Item],
-    item(id : ID!): Item
+    getItem(id : ID!): Item,
+    getAllTransactions(user_id : ID!): [Transaction],
+    getTransaction(id : ID!): Transaction
   }
 
   type User {
-    id: ID!,
-    fullname: String
+    id: ID,
+    email: String,
+    user_status: String,
+    user_date_created: String,
+    fullname: String,
+    username: String
   }
 
   type Item {
-    id: ID!,
+    id: ID,
+    item_owner_id: ID,
     item_name: String,
     item_type: String,
     item_status: String,
     item_price: Float,
-    item_inventory: Int
+    item_inventory: Int,
+    date_added: String
   }
 
+  type Transaction {
+    id: ID,
+    item_id: ID,
+    purchased_by_id: ID,
+    purchased_from_id: ID,
+    status: String,
+    date_of_purchase: String,
+    purchase_price: Int,
+    purchase_quantity: Int
+  }
 
   type Mutation {
     signUp(
@@ -36,22 +54,26 @@ module.exports = gql`
     ):LoginResponse!
 
     registerItem(
-      name: String!,
-      type: String!,
-      status: String!,
-      price: Float!,
-      inventory:  Int!
+      item_owner_id: ID!,
+      item_name: String!,
+      item_type: String!,
+      item_price: Float!,
+      item_inventory:  Int!
     ):RegisterItemResponse!
 
-    removeItem(
-      id: Int!
-    ):RemoveItemResponse
-
     purchaseItem(
-      id: Int!,
-      status: String!,
-      inventory: Int!
-    ):PurchaseItemResponse
+      purchase_by_id: ID!,
+      item_id: ID!,
+      purchase_quantity: Int!
+    ):PurchaseItemResponse!
+
+    removeItem(
+      id: ID!
+    ):RemoveItemResponse!
+
+    updateItem(
+      id: ID!
+    )
   }
 
   type SignupResponse {
