@@ -13,6 +13,7 @@ module.exports = gql`
 
   type User {
     id: ID,
+    user_rating_id: ID,
     email: String,
     user_status: String,
     user_date_created: String,
@@ -22,12 +23,15 @@ module.exports = gql`
 
   type Item {
     id: ID,
+    item_rating_id: ID,
     item_owner_id: ID,
+    item_owner_name: String,
     item_name: String,
     item_type: String,
     item_status: String,
-    item_price: Float,
+    item_price: Int,
     item_inventory: Int,
+    item_description: String,
     date_added: String
   }
 
@@ -44,61 +48,102 @@ module.exports = gql`
 
   type Mutation {
     signUp(
-      email: String!,
-      password: String!
-    ):SignupResponse!,
+      input: SignUpObject!
+    ):PlaceholderResponse!,
 
     login(
-      email: String!,
-      password: String!
-    ):LoginResponse!
+      input: LogInObject!
+    ):PlaceholderResponse!
+    
+    logout(
+      email: String!
+    ):PlaceholderResponse
+
+    updateUser(
+      input: UpdateUserObject!
+    ):PlaceholderResponse!
 
     registerItem(
-      item_owner_id: ID!,
-      item_name: String!,
-      item_type: String!,
-      item_price: Float!,
-      item_inventory:  Int!
-    ):RegisterItemResponse!
+      input: RegisterItemObject!
+    ):PlaceholderResponse!
 
     purchaseItem(
       purchase_by_id: ID!,
       item_id: ID!,
       purchase_quantity: Int!
-    ):PurchaseItemResponse!
+    ):PlaceholderResponse!
 
     removeItem(
-      id: ID!
-    ):RemoveItemResponse!
+      item_id: ID!
+    ):PlaceholderResponse!
 
     updateItem(
-      id: ID!
-    )
+      input: UpdateItemObject!
+    ):PlaceholderResponse!
+
+    addUserRating(
+      input: addUserRatingObject!
+    ):PlaceholderResponse!
+
+    addItemRating(
+      input: addItemRatingObject!
+    ):PlaceholderResponse!
   }
 
-  type SignupResponse {
+  type PlaceholderResponse {
     token: String,
     message: String!
   }
 
-  type LoginResponse {
-    token: String,
-    message: String!,
+  input SignUpObject {
+    email: String!,
+    password: String!
   }
 
-  type RegisterItemResponse {
-    token: String,
-    message: String!
+  input LogInObject {
+    email: String!,
+    password: String!
   }
 
-  type RemoveItemResponse {
-    token: String,
-    message: String!
+  input UpdateUserObject {
+    id: ID,
+    email: String,
+    user_status: String,
+    user_date_created: String,
+    fullname: String,
+    username: String
   }
 
-  type PurchaseItemResponse {
-    token: String,
-    message: String!
+  input RegisterItemObject {
+    item_owner_id: ID!,
+    item_name: String!,
+    item_type: String!,
+    item_status: String!,
+    item_price: Float!,
+    item_inventory: Int!
+  }
+
+  input UpdateItemObject {
+    id: ID!,
+    item_owner_id: ID!,
+    item_name: String!,
+    item_type: String!,
+    item_status: String!,
+    item_price: Int,
+    item_inventory: Int,
+    date_added: String
+  }
+
+  input addUserRatingObject {
+    ratee_id: ID!,
+    rated_user_id: ID!,
+    rating: Int
+  }
+
+  input addItemRatingObject {
+    ratee_id: ID!,
+    rated_item_id: ID!,
+    rating: Int
   }
 `
 

@@ -5,6 +5,8 @@ const crypto = require('crypto')
 const Promise = require('bluebird')
 const authenticate = require('../authenticate')
 
+const { createSelectQuery, createUpdateQuery, createInsertQuery  } = require ('../../utils')
+
 /* For Emergencies only */
 const emergencysignup = require('./signup')  /* <-- Use Me for emergencies */
 /* For Emergencies only */
@@ -12,64 +14,80 @@ const emergencysignup = require('./signup')  /* <-- Use Me for emergencies */
 
 module.exports = {
   Mutation: {
-    async signUp(parent, input, {req, app, postgres}){
-      let {email, password} = input
-      email = email.toLowerCase()
-
-      const checkUniqueEmailQuery = {
-        text: `SELECT email FROM bazaar.users WHERE email = '${email}'`
-      } 
-      const checkUniqueEmailResult = await postgres.query(checkUniqueEmailQuery)
-      if (checkUniqueEmailResult.rows.length) {
-        return {
-          message: 'This email has been taken'
+    async signUp(parent, {input}, {req, app, postgres}){
+      try {
+        let {email, password} = input
+        email = email.toLowerCase()
+  
+        const checkUniqueEmailQuery = {
+          text: `SELECT email FROM bazaar.users WHERE email = '${email}'`
+        } 
+        const checkUniqueEmailResult = await postgres.query(checkUniqueEmailQuery)
+        if (checkUniqueEmailResult.rows.length) throw 'This email has been taken'
+  
+        let hashedPassword = await bcrypt.hash(password, saltRounds)
+        const newUserObject = {
+          email: email,
+          password: hashedPassword,
+          user_status: 'active',
         }
-      }
-
-      let hashedPassword = await bcrypt.hash(password, saltRounds)
-      const newUserInsert = {
-        text: 'INSERT INTO bazaar.users (email, password) VALUES ($1, $2) RETURNING *',
-        values: [email, hashedPassword]
-      }
-
-      await postgres.query(newUserInsert)
-      return {
-        message: 'success'
+  
+        const newUserQuery = createInsertQuery(newUserObject, 'bazaar.users')
+        await postgres.query(newUserQuery)
+        return {
+          message: 'success'
+        }
+      } catch(err) {
+        throw err
       }
     },
 
-    async login(parent, input, {req, app, postgres}){
-      let {email, password} = input
-      email = email.toLowerCase()
+    async login(parent, {input}, {req, app, postgres}){
+      try {
+        let {email, password} = input
+        email = email.toLowerCase()
+  
+        const passwordQuery = createSelectQuery(['password'], 'email', email, 'bazaar.users')
+        const queryResult = await postgres.query(passwordQuery)
 
-      const queryDbPassword = {
-        text: `SELECT password FROM bazaar.users WHERE email = '${email}'`
-      }
+        if (!queryResult.rows.length) throw 'incorrect email'
 
-      const queryResult = await postgres.query(queryDbPassword)
-      if (!queryResult.rows.length) {
-        return {
-          message: 'incorrect email'
+        const dbPassword = queryResult.rows[0].password
+        const match = await bcrypt.compare(password, dbPassword)
+
+        if (!match) throw 'incorrect password'
+  
+        changeStatusObject = {
+          user_status: 'active',
+          email: email
         }
-      } 
-      const dbPassword = queryResult.rows[0].password
-      const match = await bcrypt.compare(password, dbPassword)
-      const responseMessage = match ? 'success' : 'incorrect password'
 
-      return {
-        message: responseMessage
+        const loginQuery = createUpdateQuery(changeStatusObject, 'email', 'bazaar.users')
+        await postgres.query(loginQuery)
+
+        return {
+          message: 'success'
+        }
+      }catch(err) {
+        throw err
       }
     },
 
-    async registerItem(parent, input, {req, app, postgres}){
-      let {item_name, item_type, item_price, item_inventory, item_owner_id} = input
-
-      const newItemInsert = {
-        text: 'INSERT INTO bazaar.items (item_name, item_type, item_status, item_price, item_inventory, item_owner_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        values: [item_name, item_type, 'listed', item_price, item_inventory, item_owner_id]
+    async updateUser(parent, {input}, {req, app, postgres}){
+      try {
+        const updateUserQuery = createUpdateQuery(input, 'id', 'bazaar.users')
+        await postgres.query(updateUserQuery)
+        return {
+          message: 'success'
+        }
+      } catch(err) {
+        throw err
       }
+    },
 
-      await postgres.query(newItemInsert)
+    async registerItem(parent, {input}, {req, app, postgres}){
+      const insertNewItem = createInsertQuery(input, 'bazaar.items')
+      await postgres.query(insertNewItem)
       return {
         message: 'success'
       }
@@ -132,7 +150,14 @@ module.exports = {
     },
 
     async updateItem(parent, input, {req, app, postgres}){
+      const {input: inputObject} = input
       
+      const updateItemQuery = createUpdateQuery(inputObject, 'id', 'bazaar.items')
+
+      await postgres.query(updateItemQuery)
+      return {
+        message: 'success'
+      }
     },
   },
 }

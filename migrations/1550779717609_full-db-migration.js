@@ -7,8 +7,7 @@ exports.up = pgm => {
       "password" VARCHAR(255) NOT NULL,
       "user_status" VARCHAR(64),
       "user_date_created" DATE NOT NULL DEFAULT CURRENT_DATE,
-      "fullname" VARCHAR(128),
-      "username" VARCHAR(128)
+      "fullname" VARCHAR(128)
     );
   `),
 
@@ -21,8 +20,25 @@ exports.up = pgm => {
       "item_status" VARCHAR(64) NOT NULL,
       "item_price" INT NOT NULL,
       "item_inventory" VARCHAR(64) NOT NULL,
+      "item_description" TEXT,
       "date_added" DATE NOT NULL DEFAULT CURRENT_DATE,
       FOREIGN KEY (item_owner_id) REFERENCES bazaar.users (id)
+    );
+  `),
+
+  pgm.sql(`
+    CREATE TABLE "bazaar"."item_ratings" (
+      "id" SERIAL PRIMARY KEY,
+      "item_id" INT NOT NULL,
+      "value" INT NOT NULL
+    );
+  `),
+
+  pgm.sql(`
+    CREATE TABLE "bazaar"."user_ratings" (
+      "id" SERIAL PRIMARY KEY,
+      "user_id" INT NOT NULL,
+      "value" INT NOT NULL
     );
   `),
 
@@ -31,7 +47,7 @@ exports.up = pgm => {
       "id" SERIAL PRIMARY KEY,
       "stripe_id" INT NOT NULL
     );
-  `)
+  `),
 
   pgm.sql(`
     CREATE TABLE "bazaar"."transactions" (

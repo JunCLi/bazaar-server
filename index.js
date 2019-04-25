@@ -46,7 +46,7 @@ resolvers = resolvers()
 
 const schema = makeExecutableSchema({
   typeDefs,
-  resolvers,
+  resolvers
 })
 
 const apolloServer = new ApolloServer({

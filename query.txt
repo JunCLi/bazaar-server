@@ -28,7 +28,6 @@ query{
   getUser(id: 1){
     id
     email
-    password
     user_status
     user_date_created
     fullname
@@ -77,13 +76,14 @@ query{
 
 
 mutation{
-  registerItem(
+  registerItem(input: {
     item_owner_id: 2
-    item_name: "Apple", 
-    item_type: "an item",
-    item_price: 234, 
-    item_inventory: 10, 
-  ){
+    item_name: "Ugly Apple", 
+    item_type: "an ugly item",
+    item_status: "listed",
+    item_price: 144, 
+    item_inventory: 10
+  }){
     message
   }
 }
@@ -95,16 +95,19 @@ mutation{
 }
 
 mutation{
-  signUp(email: "hello", password: "1234"){
+  signUp(input: {
+    email: "person@person.com",
+    password: "1234"
+  }){
     message
   }
 }
 
-mutation{
-  login(
-    email: "hELo",
-    password: "1234",
-  ){
+mutation {
+  login(input: {
+    email: "person@person.com",
+    password: "1234"
+  }){
     message
   }
 }
@@ -112,5 +115,25 @@ mutation{
 mutation{
   purchaseItem(purchase_by_id: 3, item_id: 1, purchase_quantity: 1){
     message
+  }
+}
+
+mutation{
+  updateItem(input: {
+    id: 1,
+    item_name: "super banana", 
+    item_type: "a super item",
+    item_inventory: 14
+  }){
+    message	
+  }
+}
+
+mutation{
+  updateUser(input: {
+    id: 1,
+    fullname: "The Real Simon Stern"
+  }){
+    message	
   }
 }
