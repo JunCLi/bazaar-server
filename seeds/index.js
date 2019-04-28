@@ -58,7 +58,7 @@ const itemsSeeds = [
   },
   {
     item_name: 'Not a phone',
-    item_type: 'Not an item',
+    item_type: 'not an item',
     item_status: 'listed',
     item_price: 0,
     item_inventory: 2,

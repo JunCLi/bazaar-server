@@ -31,7 +31,6 @@ query{
     user_status
     user_date_created
     fullname
-    username
   }
 }
 
@@ -42,7 +41,6 @@ query{
     user_status
     user_date_created
     fullname
-    username
   }
 }
 

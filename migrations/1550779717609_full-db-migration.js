@@ -16,12 +16,12 @@ exports.up = pgm => {
       "id" SERIAL PRIMARY KEY,
       "item_owner_id" INT NOT NULL,
       "item_name" VARCHAR(64) NOT NULL,
-      "item_type" VARCHAR(64) NOT NULL,
+      "item_type" VARCHAR(64),
       "item_status" VARCHAR(64) NOT NULL,
       "item_price" INT NOT NULL,
       "item_inventory" VARCHAR(64) NOT NULL,
       "item_description" TEXT,
-      "date_added" DATE NOT NULL DEFAULT CURRENT_DATE,
+      "date_added" TIMESTAMP NOT NULL DEFAULT CURRENT_timestamp,
       FOREIGN KEY (item_owner_id) REFERENCES bazaar.users (id)
     );
   `),

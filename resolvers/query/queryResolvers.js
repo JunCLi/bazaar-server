@@ -6,20 +6,19 @@ module.exports = {
   Query: {
     async getAllUsers(parent, input, {req, app, postgres}){
       const usersQuery = {
-        text: 'SELECT id, email, user_status, user_date_created, fullname, username FROM bazaar.users'
+        text: 'SELECT id, email, user_status, user_date_created, fullname FROM bazaar.users'
       }
 
       const usersQueryResult = await postgres.query(usersQuery)
 
       const usersArray = usersQueryResult.rows.map(userQuery => {
-        const {id, email, user_status, user_date_created, fullname, username} = userQuery
+        const {id, email, user_status, user_date_created, fullname } = userQuery
         return {
           id, 
           email,
           user_status,
           user_date_created,
           fullname,
-          username
         }
       })
 
@@ -34,13 +33,12 @@ module.exports = {
         'user_status',
         'user_date_created',
         'fullname',
-        'username',
       ]
 
       const userQuery = createSelectQuery(selectColumns, 'id', id, 'bazaar.users')
 
       const userQueryResult = await postgres.query(userQuery)
-      const {email, user_status, user_date_created, fullname, username} = userQueryResult.rows[0]
+      const {email, user_status, user_date_created, fullname } = userQueryResult.rows[0]
 
       return {
         id,
@@ -48,7 +46,6 @@ module.exports = {
         user_status,
         user_date_created,
         fullname,
-        username
       }
     },
 

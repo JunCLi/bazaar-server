@@ -18,7 +18,7 @@ module.exports = gql`
     user_status: String,
     user_date_created: String,
     fullname: String,
-    username: String
+    usersItems: [Item]
   }
 
   type Item {
@@ -49,7 +49,7 @@ module.exports = gql`
   type Mutation {
     signUp(
       input: SignUpObject!
-    ):PlaceholderResponse!,
+    ):PlaceholderResponse!
 
     login(
       input: LogInObject!
@@ -110,17 +110,17 @@ module.exports = gql`
     email: String,
     user_status: String,
     user_date_created: String,
-    fullname: String,
-    username: String
+    fullname: String
   }
 
   input RegisterItemObject {
     item_owner_id: ID!,
     item_name: String!,
-    item_type: String!,
+    item_type: String,
     item_status: String!,
     item_price: Float!,
-    item_inventory: Int!
+    item_inventory: Int!,
+    item_description: String
   }
 
   input UpdateItemObject {
