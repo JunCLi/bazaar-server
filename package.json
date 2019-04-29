@@ -1,7 +1,7 @@
 {
   "scripts": {
     "db:up": "yarn node-pg-migrate up --create-schema",
-    "db:drop": "sudo -u postgres psql -d postgres -c \"DROP SCHEMA IF EXISTS \\\"bazaar\\\"CASCADE\"",
+    "db:drop": "PGPASSWORD=GcVRWhb5YkDXaaX psql -h bazaardb.cexeflu8ip0c.us-east-2.rds.amazonaws.com -U bazaarUser -d bazaarUser -c \"DROP SCHEMA IF EXISTS \\\"bazaar\\\" CASCADE\"",
     "db:reset": "yarn db:drop && yarn db:up",
     "db:seed": "node seeds/index.js",
     "db:resetandseed": "yarn db:reset && yarn db:seed",
@@ -29,3 +29,5 @@
     "nodemon": "^1.18.10"
   }
 }
+
+

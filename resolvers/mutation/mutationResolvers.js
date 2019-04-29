@@ -31,9 +31,25 @@ module.exports = {
           password: hashedPassword,
           user_status: 'active',
         }
-  
+
         const newUserQuery = createInsertQuery(newUserObject, 'bazaar.users')
-        await postgres.query(newUserQuery)
+        const insertNewUser = await postgres.query(newUserQuery)
+        
+        
+        
+        let myJWTToken = await jwt.sign({
+          data: insertNewUser.rows[0],
+          exp: Math.floor(Date.now() / 1000 + 60 * 60)
+        }, 'secret')
+        
+        console.log('user', insertNewUser.rows[0])
+        console.log('token', myJWTToken)
+
+        req.res.cookie('baazar_app', myJWTToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production'
+        })
+        
         return {
           message: 'success'
         }
@@ -47,7 +63,7 @@ module.exports = {
         let {email, password} = input
         email = email.toLowerCase()
   
-        const passwordQuery = createSelectQuery(['password'], 'email', email, 'bazaar.users')
+        const passwordQuery = createSelectQuery(['password'], 'bazaar.users', 'email', email)
         const queryResult = await postgres.query(passwordQuery)
 
         if (!queryResult.rows.length) throw 'incorrect email'

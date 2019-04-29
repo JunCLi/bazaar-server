@@ -5,10 +5,15 @@ const { createSelectQuery } = require('../../utils')
 module.exports = {
   Query: {
     async getAllUsers(parent, input, {req, app, postgres}){
-      const usersQuery = {
-        text: 'SELECT id, email, user_status, user_date_created, fullname FROM bazaar.users'
-      }
+      const selectColumns = [
+        'id',
+        'email',
+        'user_status',
+        'user_date_created',
+        'fullname'
+      ]
 
+      const usersQuery = createSelectQuery(selectColumns, 'bazaar.users')
       const usersQueryResult = await postgres.query(usersQuery)
 
       const usersArray = usersQueryResult.rows.map(userQuery => {
@@ -35,7 +40,7 @@ module.exports = {
         'fullname',
       ]
 
-      const userQuery = createSelectQuery(selectColumns, 'id', id, 'bazaar.users')
+      const userQuery = createSelectQuery(selectColumns, 'bazaar.users', 'id', id)
 
       const userQueryResult = await postgres.query(userQuery)
       const {email, user_status, user_date_created, fullname } = userQueryResult.rows[0]
@@ -50,27 +55,24 @@ module.exports = {
     },
 
     async getAllItems(parent, input, {req, app, postgres}){
-      const itemsQuery = {
-        text: `SELECT
-            bazaar.items.id,
-            bazaar.items.item_owner_id, 
-            bazaar.items.item_name,
-            bazaar.items.item_type,
-            bazaar.items.item_status,
-            bazaar.items.item_price,
-            bazaar.items.item_inventory,
-            bazaar.items.item_description,
-            bazaar.items.date_added,
-            bazaar.users.fullname
-          FROM bazaar.items
-          JOIN bazaar.users ON bazaar.items.item_owner_id = bazaar.users.id
-        `,
-      }
+      const selectColumns = [
+        'id',
+        'item_owner_id',
+        'item_name',
+        'item_type',
+        'item_status',
+        'item_price',
+        'item_inventory',
+        'item_description',
+        'date_added',
+      ]
 
+      const itemsQuery = createSelectQuery(selectColumns, 'bazaar.items')
       const itemsQueryResult = await postgres.query(itemsQuery)
 
       const itemsArray = itemsQueryResult.rows.map(itemQuery => {
         const {id, item_owner_id, item_name, item_type, item_status, item_price, item_inventory, item_description, date_added, fullname: item_owner_name} = itemQuery
+
         return {
           id,
           item_owner_id,
@@ -91,23 +93,21 @@ module.exports = {
     async getItem(parent, input, {req, app, postgres}){
       const {id} = input
 
-      const itemQuery = {
-        text: `SELECT
-            bazaar.items.item_owner_id, 
-            bazaar.items.item_name,
-            bazaar.items.item_type,
-            bazaar.items.item_status,
-            bazaar.items.item_price,
-            bazaar.items.item_inventory,
-            bazaar.items.item_description,
-            bazaar.items.date_added,
-            bazaar.users.fullname
-          FROM bazaar.items
-          JOIN bazaar.users ON bazaar.items.item_owner_id = bazaar.users.id WHERE bazaar.items.id = $1`,
-        values: [id]
-      }
+      const selectColumns = [
+        'id',
+        'item_owner_id',
+        'item_name',
+        'item_type',
+        'item_status',
+        'item_price',
+        'item_inventory',
+        'item_description',
+        'date_added',
+      ]
 
+      const itemQuery = createSelectQuery(selectColumns, 'bazaar.items', 'id', id)
       const itemQueryResult = await postgres.query(itemQuery)
+      
       const {item_owner_id, item_name, item_type, item_status, item_price, item_inventory, item_description, date_added, fullname: item_owner_name} = itemQueryResult.rows[0]
 
       return {

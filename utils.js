@@ -1,7 +1,14 @@
-module.exports.createSelectQuery = (selectColumns, selector, selectorValue, table) => {
+module.exports.createSelectQuery = (selectColumns, table, selector, selectorValue) => {
   const queryString = selectColumns.join(', ')
-  return {
-    text: `SELECT ${queryString} FROM ${table} WHERE ${selector} = '${selectorValue}'`
+  
+  if (selector) {
+    return {
+      text: `SELECT ${queryString} FROM ${table} WHERE ${selector} = '${selectorValue}'`
+    }
+  } else {
+    return {
+      text: `SELECT ${queryString} FROM ${table}`
+    }
   }
 }
 
@@ -14,7 +21,7 @@ module.exports.createInsertQuery = (inputObject, table) => {
   ).join(', ')
 
   return {
-    text: `INSERT INTO ${table} (${queryString}) VALUES (${queryValuesString})`,
+    text: `INSERT INTO ${table} (${queryString}) VALUES (${queryValuesString}) RETURNING *`,
     values: queryValues
   }
 }

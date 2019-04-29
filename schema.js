@@ -25,14 +25,14 @@ module.exports = gql`
     id: ID,
     item_rating_id: ID,
     item_owner_id: ID,
-    item_owner_name: String,
     item_name: String,
     item_type: String,
     item_status: String,
     item_price: Int,
     item_inventory: Int,
     item_description: String,
-    date_added: String
+    date_added: String,
+    itemOwner: User
   }
 
   type Transaction {
