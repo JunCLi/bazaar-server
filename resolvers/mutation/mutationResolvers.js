@@ -17,7 +17,7 @@ module.exports = {
   Mutation: {
     async signUp(parent, {input}, {req, app, postgres}){
       try {
-        let {email, password} = input
+        let {email, password, fullname} = input
         email = email.toLowerCase()
   
         const checkUniqueEmailQuery = {
@@ -29,6 +29,7 @@ module.exports = {
         let hashedPassword = await bcrypt.hash(password, saltRounds)
         const newUserObject = {
           email: email,
+          fullname: fullname,
           password: hashedPassword,
           user_status: 'active',
         }
@@ -103,7 +104,7 @@ module.exports = {
       }
     },
 
-    async purchaseItem(parent, input, {req, app, postgres}){
+    async purchaseItem(parent, {input}, {req, app, postgres}){
       try {
         let {purchase_by_id, item_id, purchase_quantity} = input
 

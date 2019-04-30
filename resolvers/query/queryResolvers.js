@@ -57,16 +57,16 @@ module.exports = {
     async getLoggedUser(parent, input, {req, app, postgres}){
       try {
         const user_id = authenticate(app, req)
-
         const selectColumns = [
           'id',
           'fullname'
         ]
-  
+
         const userQuery = createSelectQuery(selectColumns, 'bazaar.users', 'id', user_id)
+
         const userQueryResult = await postgres.query(userQuery)
         const {id, fullname} = userQueryResult.rows[0]
-  
+
         return {
           id,
           fullname

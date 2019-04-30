@@ -69,9 +69,7 @@ module.exports = gql`
     ):PlaceholderResponse!
 
     purchaseItem(
-      purchase_by_id: ID!,
-      item_id: ID!,
-      purchase_quantity: Int!
+      input: purchaseItemObject!
     ):PlaceholderResponse!
 
     removeItem(
@@ -134,6 +132,12 @@ module.exports = gql`
     item_price: Int,
     item_inventory: Int,
     date_added: String
+  }
+
+  input purchaseItemObject {
+    purchase_by_id: ID!,
+    item_id: ID!,
+    purchase_quantity: ID!
   }
 
   input addUserRatingObject {
