@@ -2,9 +2,17 @@ const { AuthenticationError } = require('apollo-server')
 const jwt = require('jsonwebtoken')
 
 const authenticate = (app, req) => {
-  console.log('token', req.cookies)
+  const jwtCookie = req.cookies['bazaar_app']
 
-  return 1
+  try {
+    const verified_information = jwt.verify(jwtCookie, 'secret')
+
+    return verified_information.data
+
+  } catch(err) {
+    throw err
+  }
+
 }
 
 module.exports = authenticate

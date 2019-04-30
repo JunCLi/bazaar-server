@@ -4,7 +4,8 @@ module.exports = gql`
 
   type Query {
     getAllUsers: [User],
-    getUser(id : ID!): User,
+    getUser(id : ID): User,
+    getLoggedUser: User,
     getAllItems: [Item],
     getItem(id : ID!): Item,
     getAllTransactions(user_id : ID!): [Transaction],
@@ -97,6 +98,7 @@ module.exports = gql`
 
   input SignUpObject {
     email: String!,
+    fullname: String!,
     password: String!
   }
 

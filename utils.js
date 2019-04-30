@@ -21,7 +21,7 @@ module.exports.createInsertQuery = (inputObject, table) => {
   ).join(', ')
 
   return {
-    text: `INSERT INTO ${table} (${queryString}) VALUES (${queryValuesString}) RETURNING *`,
+    text: `INSERT INTO ${table} (${queryString}) VALUES (${queryValuesString}) RETURNING id`,
     values: queryValues
   }
 }
@@ -36,7 +36,7 @@ module.exports.createUpdateQuery = (inputObject, selector, table) => {
   }).join(', ')
 
   return {
-    text: `UPDATE ${table} SET ${queryString} WHERE ${selector} = '${inputObject[selector]}'`,
+    text: `UPDATE ${table} SET ${queryString} WHERE ${selector} = '${inputObject[selector]}' RETURNING id`,
     values: queryValues
   }
 }

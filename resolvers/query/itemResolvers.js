@@ -5,7 +5,6 @@ const { createSelectQuery } = require('../../utils')
 module.exports = {
   Item: {
     async itemOwner(parent, input, {req, app, postgres}){
-      console.log(parent)
       const { item_owner_id } = parent
 
       const selectColumns = [

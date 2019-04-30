@@ -5,10 +5,11 @@ const crypto = require('crypto')
 const Promise = require('bluebird')
 const authenticate = require('../authenticate')
 
+const { createCookie, setCookie } = require('./setCookie')
 const { createSelectQuery, createUpdateQuery, createInsertQuery  } = require ('../../utils')
 
 /* For Emergencies only */
-const emergencysignup = require('./signup')  /* <-- Use Me for emergencies */
+const emergencysignup = require('./signup') /* <-- Use Me for emergencies */
 /* For Emergencies only */
 
 
@@ -35,21 +36,10 @@ module.exports = {
         const newUserQuery = createInsertQuery(newUserObject, 'bazaar.users')
         const insertNewUser = await postgres.query(newUserQuery)
         
-        
-        
-        let myJWTToken = await jwt.sign({
-          data: insertNewUser.rows[0],
-          exp: Math.floor(Date.now() / 1000 + 60 * 60)
-        }, 'secret')
-        
-        console.log('user', insertNewUser.rows[0])
-        console.log('token', myJWTToken)
+        const tokenData = insertNewUser.rows[0].id
+        let myJWTToken = await createCookie(tokenData, 16)
+        setCookie('bazaar_app', myJWTToken, req.res)
 
-        req.res.cookie('baazar_app', myJWTToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production'
-        })
-        
         return {
           message: 'success'
         }
@@ -79,7 +69,11 @@ module.exports = {
         }
 
         const loginQuery = createUpdateQuery(changeStatusObject, 'email', 'bazaar.users')
-        await postgres.query(loginQuery)
+        const logUserIn = await postgres.query(loginQuery)
+
+        const tokenData = logUserIn.rows[0].id
+        let myJWTToken = await createCookie(tokenData, 16)
+        setCookie('bazaar_app', myJWTToken, req.res)
 
         return {
           message: 'success'

@@ -5,9 +5,7 @@ const { createSelectQuery } = require('../../utils')
 module.exports = {
   User: {
     async usersItems(parent, input, {req, app, postgres}){
-      const sudo_user_id = authenticate(app, req)
-
-      const { id: user_id } = parent
+      const user_id = authenticate(app, req)
 
       const selectColumns = [
         'id',
