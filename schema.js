@@ -135,7 +135,7 @@ module.exports = gql`
   }
 
   input purchaseItemObject {
-    purchase_by_id: ID!,
+    purchase_by_id: ID,
     item_id: ID!,
     purchase_quantity: ID!
   }

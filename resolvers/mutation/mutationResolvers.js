@@ -98,6 +98,7 @@ module.exports = {
 
     async registerItem(parent, {input}, {req, app, postgres}){
       const insertNewItem = createInsertQuery(input, 'bazaar.items')
+      console.log(input)
       await postgres.query(insertNewItem)
       return {
         message: 'success'
@@ -106,7 +107,8 @@ module.exports = {
 
     async purchaseItem(parent, {input}, {req, app, postgres}){
       try {
-        let {purchase_by_id, item_id, purchase_quantity} = input
+        const purchase_by_id = authenticate(app, req)
+        let {item_id, purchase_quantity} = input
 
         const listedItemQuery = {
           text: `SELECT item_owner_id, item_status, item_inventory, item_price FROM bazaar.items WHERE id = '${item_id}'`
