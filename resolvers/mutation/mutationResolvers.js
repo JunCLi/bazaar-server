@@ -167,6 +167,8 @@ module.exports = {
       
       const updateItemQuery = createUpdateQuery(inputObject, 'id', 'bazaar.items')
 
+      console.log(updateItemQuery)
+
       await postgres.query(updateItemQuery)
       return {
         message: 'success'

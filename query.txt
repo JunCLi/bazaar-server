@@ -1,137 +1,159 @@
-query{
-  getAllItems{
-    id
-    item_owner_id
-    item_name
-    item_type
-    item_status
-    item_price
-    item_inventory
-    date_added
-  }
-}
-  
-query{
-  getItem(id: 2){
-    id
-    item_owner_id
-    item_name
-    item_type
-    item_status
-    item_price
-    item_inventory
-    date_added
-  }
-}
+# mutation {
+#   signUp(input: {
+#     email: "person2@person.com",
+#     fullname: "person2",
+#     password: "12341234",
+#   }){
+#     message
+#   }
+# }
 
-query{
-  getUser(id: 1){
-    id
-    email
-    user_status
-    user_date_created
-    fullname
-  }
-}
+# mutation {
+#   login(input: {
+#     email: "person1@person.com",
+#     password: "12341234"
+#   }){
+#     message
+#   }
+# }
 
-query{
-  getAllUsers{
-    id
-    email
-    user_status
-    user_date_created
-    fullname
-  }
-}
+# mutation{
+#   registerItem(input: {
+#     item_owner_id: 13
+#     item_name: "Ugly Apple", 
+#     item_type: "an ugly item",
+#     item_status: "listed",
+#     item_price: 144, 
+#     item_inventory: 10
+#   }){
+#     message
+#   }
+# }
 
-query{
-  getAllTransactions(user_id: 1){
-    id
-    item_id
-    purchased_by_id
-    purchased_from_id
-    status
-    date_of_purchase
-    purchase_price
-    purchase_quantity
-  }
-}
-
-query{
-  getTransaction(id: 1){
-    id
-    item_id
-    purchased_by_id
-    purchased_from_id
-    status
-    date_of_purchase
-    purchase_price
-    purchase_quantity
-  }
-}
+# mutation{
+#   updateItem(input: {
+#     id: 1,
+#     item_name: "super banana", 
+#     item_type: "a super item",
+#     item_inventory: 14
+#   }){
+#     message	
+#   }
+# }
 
 
+# query{
+#   getItem(id: 1){
+#     id
+#     item_owner_id
+#     item_owner_name
+#     item_name
+#     item_type
+#     item_status
+#     item_price
+#     item_inventory
+#     item_description
+#     date_added
+#   }
+# }
 
+# query{
+#   getAllItems{
+#     id
+#     item_owner_id
+#     item_owner_name
+#     item_name
+#     item_type
+#     item_status
+#     item_price
+#     item_inventory
+#     item_description
+#     date_added
+#   }
+# }
 
 mutation{
-  registerItem(input: {
-    item_owner_id: 2
-    item_name: "Ugly Apple", 
-    item_type: "an ugly item",
-    item_status: "listed",
-    item_price: 144, 
-    item_inventory: 10
+  purchaseItem(input: {
+    purchase_by_id: 2
+    item_id: 1
+    purchase_quantity: 1
   }){
     message
   }
 }
 
-mutation{
-  removeItem(id: 3){
-    message
-  }
-}
+# query{
+#   getAllTransactions(user_id: 1){
+#     id
+#     item_id
+#     purchased_by_id
+#     purchased_from_id
+#     status
+#     date_of_purchase
+#     purchase_price
+#     purchase_quantity
+#   }
+# }
 
-mutation{
-  signUp(input: {
-    email: "person@person.com",
-    password: "1234"
-  }){
-    message
-  }
-}
+# query{
+#   getUser(id: "1"){
+#     usersItems {
+#       id,
+#       item_name,
+#       item_type,
+#       item_status,
+#       item_price,
+#       item_inventory,
+#       item_description
+#     }
+#   }
+# }
 
-mutation {
-  login(input: {
-    email: "person@person.com",
-    password: "1234"
-  }){
-    message
-  }
-}
+# query{
+#   getAllUsers{
+#     id
+#     email
+#     user_status
+#     user_date_created
+#     fullname
+#   }
+# }
 
-mutation{
-  purchaseItem(purchase_by_id: 3, item_id: 1, purchase_quantity: 1){
-    message
-  }
-}
+# query{
+#   getItem(id: 3){
+#     id
+#     item_owner_id
+#     item_name
+#     item_type
+#     item_status
+#     item_price
+#     item_inventory
+#     date_added
+#     itemOwner {
+#       id
+#       email
+#       fullname
+#     }
+#   }
+# }
 
-mutation{
-  updateItem(input: {
-    id: 1,
-    item_name: "super banana", 
-    item_type: "a super item",
-    item_inventory: 14
-  }){
-    message	
-  }
-}
+# query{
+#   getAllItems{
+#     id
+#     item_owner_id
+#     item_name
+#     item_type
+#     item_status
+#     item_price
+#     item_inventory
+#     item_description
+#     date_added
+#     itemOwner {
+#       id
+#       email
+#       fullname
+#     }
+#   }
+# }
 
-mutation{
-  updateUser(input: {
-    id: 1,
-    fullname: "The Real Simon Stern"
-  }){
-    message	
-  }
-}
+
