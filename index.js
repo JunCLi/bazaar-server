@@ -27,20 +27,28 @@ if (process.env.NODE_ENV === 'production') {
 
   // Serve the static front-end from /public when deployed
   app.use(express.static(root))
-  app.use(fallback('index.html', { root }))
+	
+	app.get('/*', (req, res) => {
+		res.sendFile(path.join(_dirname, '../client/build/index.html'), err => {
+			if (err) {
+				res.status(500).send(err)
+			}
+		})
+	})
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  // Allow requests from dev server address
-  const corsConfig = {
-    origin: 'http://localhost:3000',
-    credentials: true,
-  }
-  app.set('CORS_CONFIG', corsConfig)
 
-  // Allow requests from dev server address
-  app.use(cors(corsConfig))
+// Allow requests from dev server address
+const corsConfig = {
+	origin: 'http://localhost:3000',
+	credentials: true,
+	methods: 'GET, POST'
 }
+app.set('CORS_CONFIG', corsConfig)
+
+// Allow requests from dev server address
+app.use(cors(corsConfig))
+
 
 resolvers = resolvers()
 
