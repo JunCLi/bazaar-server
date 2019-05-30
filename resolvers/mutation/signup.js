@@ -8,7 +8,7 @@
 
 
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt-nodejs')
 const crypto = require('crypto')
 const Promise = require('bluebird')
 const setCookie = require('./setCookie')
@@ -23,7 +23,7 @@ const signup = async (
   },
   { req, app, postgres }
 ) => {
-  const hashedPassword = await bcrypt.hash(password, 12)
+  const hashedPassword = bcrypt.hashSync(password, 12)
   const emailLowerCase = email.toString().toLowerCase()
   const orgID = 1
 

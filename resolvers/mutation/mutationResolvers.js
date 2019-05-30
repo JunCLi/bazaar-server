@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt-nodejs')
 const jwt = require('jsonwebtoken')
-const saltRounds = 12
+const saltRounds = bcrypt.genSaltSync(12)
 const crypto = require('crypto')
 const Promise = require('bluebird')
 const authenticate = require('../authenticate')
@@ -9,7 +9,7 @@ const { createCookie, setCookie } = require('./setCookie')
 const { createSelectQuery, createUpdateQuery, createInsertQuery  } = require ('../../utils')
 
 /* For Emergencies only */
-const emergencysignup = require('./signup') /* <-- Use Me for emergencies */
+// const emergencysignup = require('./signup') /* <-- Use Me for emergencies */
 /* For Emergencies only */
 
 
@@ -26,7 +26,7 @@ module.exports = {
         const checkUniqueEmailResult = await postgres.query(checkUniqueEmailQuery)
         if (checkUniqueEmailResult.rows.length) throw 'This email has been taken'
   
-        let hashedPassword = await bcrypt.hash(password, saltRounds)
+        let hashedPassword = bcrypt.hashSync(password, saltRounds)
         const newUserObject = {
           email: email,
           fullname: fullname,
@@ -60,7 +60,7 @@ module.exports = {
         if (!queryResult.rows.length) throw 'incorrect email'
 
         const dbPassword = queryResult.rows[0].password
-        const match = await bcrypt.compare(password, dbPassword)
+        const match = bcrypt.compareSync(password, dbPassword)
 
         if (!match) throw 'incorrect password'
   
